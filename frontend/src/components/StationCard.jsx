@@ -5,7 +5,7 @@ import QuickActions from "./QuickActions"
 
 export default function StationCard({ stationInfo }) {
 
-    const { userName } = useContext(UserContext)
+    const { userName, clickFav, setClickFav } = useContext(UserContext)
 
     const phaseOne = [stationInfo.street_address, stationInfo.city, stationInfo.state, stationInfo.zipCode].filter(Boolean).join("+");
     const phaseTwo = phaseOne.replace(/\s/g, '+')
@@ -16,8 +16,10 @@ export default function StationCard({ stationInfo }) {
         try {
             const response = await axios.post('/addfavorite', {
                 evID: stationInfo.id,
+                stationName: stationInfo.station_name,
                 userName: userName
             })
+            setClickFav(!clickFav)
         } catch (error) {
             console.log(error)
         }

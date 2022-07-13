@@ -19,6 +19,8 @@ function App() {
   const [selectedStation, setSelectedStation] = useState(null)
   const [fuelStations, updateFuelStations] = useState([])
   const [userName, setUserName] = useState(null)
+  const [favorites, setFavorites] = useState([])
+  const [clickFav, setClickFav] = useState(false)
 
 
   const { isLoaded, loadError } = useLoadScript({
@@ -41,7 +43,7 @@ function App() {
   if (!isLoaded) return "Loading..."
   return (
     <div>
-      <UserContext.Provider value={{ userName, setUserName }}>
+      <UserContext.Provider value={{ userName, setUserName, favorites, setFavorites, clickFav, setClickFav }}>
         <AccountHandle />
         <EVSearch
           updateFuelStations={updateFuelStations}

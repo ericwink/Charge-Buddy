@@ -56,18 +56,13 @@ const isAuthenticated = () => {
     }
 }
 
-//check user session on server
-app.get('/checkaccount', (req, res) => {
-    console.log(req.session)
-    if (req.session) {
-        res.json({ user: req.session.user })
+//find and send user info by session on server
+app.get('/checkaccount', async (req, res) => {
+    if (req.session.user) {
+        const foundUser = await UserAccount.findOne({ username: req.session.user }).populate('favorites')
+        const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name } })
+        res.json({ user: foundUser.username, favorites: favorites })
     }
-})
-
-app.get('/favorites', async (req, res) => {
-    const foundUser = await UserAccount.findOne({ username: req.session.user })
-    const result = await foundUser.populate('favorites')
-    console.log(result)
 })
 
 //handle user sign-up
@@ -139,9 +134,16 @@ app.get('/logout', async (req, res) => {
 app.post('/addfavorite', async (req, res) => {
     try {
         if (!req.session.user) return res.status(400).json({ 'message': 'user must be signed in' })
-        const foundStation = await EVStation.findOne({ evID: req.body.evID })
+        let station = await EVStation.findOne({ evID: req.body.evID })
+        if (!station) {
+            station = new EVStation
+            station.evID = req.body.evID
+            station.name = req.body.stationName
+            await station.save()
+        }
         const foundUser = await UserAccount.findOne({ username: req.body.userName })
-        foundUser.favorites.push(foundStation._id)
+        foundUser.favorites.push(station._id)
+        console.log(foundUser)
         await foundUser.save()
         res.send('done!')
     } catch (err) {

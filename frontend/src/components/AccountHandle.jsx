@@ -12,7 +12,7 @@ export default function AccountHandle() {
     const [displayState, setDisplayState] = useState('Sign In')
     const [email, setemail] = useState('')
     const [password, setPassword] = useState('')
-    const { userName, setUserName } = useContext(UserContext)
+    const { userName, setUserName, favorites, setFavorites, clickFav } = useContext(UserContext)
 
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
@@ -29,14 +29,19 @@ export default function AccountHandle() {
     }
 
     useEffect(() => {
-        console.log('account check try')
         checkAccount()
     }, [])
+
+    useEffect(() => {
+        checkAccount()
+    }, [clickFav])
 
     //check that a user is signed in
     const checkAccount = async () => {
         const response = await axios.get('/checkaccount', { withCredentials: true })
+        console.log(response)
         setUserName(response.data.user)
+        setFavorites([...response.data.favorites])
     }
 
     // send user form data to the server to create an account
