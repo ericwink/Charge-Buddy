@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../Context/UserContext"
 import MyAccount from "./MyAccount"
 import SignIn from "./SignIn"
-import SignUp from "./SignUp"
 import UpdatedSignUp from "./UpdatedSignUp"
 
 export default function AccountHandle() {
@@ -14,6 +13,7 @@ export default function AccountHandle() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const { loggedInUser, setloggedInUser, favorites, setFavorites, clickFav } = useContext(UserContext)
+    const [loadingUser, setLoadingUser] = useState(false)
 
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
@@ -40,9 +40,9 @@ export default function AccountHandle() {
     //check that a user is signed in
     const checkAccount = async () => {
         const response = await axios.get('/checkaccount', { withCredentials: true })
-        console.log(response)
         setloggedInUser(response.data.user)
         setFavorites([...response.data.favorites])
+        setLoadingUser(false)
     }
 
     // send user form data to the server to create an account
@@ -55,7 +55,6 @@ export default function AccountHandle() {
             })
             setUsername('')
             setPassword('')
-            console.log(response)
             alertErr(response.data.message, 'success')
         } catch (error) {
             alertErr(error.response.data.message, 'danger')
@@ -66,17 +65,20 @@ export default function AccountHandle() {
     async function login(e) {
         e.preventDefault();
         try {
+            setLoadingUser(true)
             const response = await axios.post(`/login`, {
                 username: username,
                 password: password
             })
+            setloggedInUser(response.data.user)
+            setFavorites([...response.data.favorites])
+            setLoadingUser(false)
             setUsername('')
             setPassword('')
-            alertErr(response.data.message, 'success')
-            checkAccount()
         } catch (error) {
             alertErr(error.response.data.message, 'danger')
             console.log(error)
+            setLoadingUser(false)
         }
     }
 
@@ -86,6 +88,7 @@ export default function AccountHandle() {
             const response = await axios.get('/logout')
             alertErr(response.data.message, 'success')
             setloggedInUser(null)
+            setFavorites(null)
         } catch (error) {
             alertErr(error.response.data.message, 'danger')
             console.log(error)
@@ -129,6 +132,7 @@ export default function AccountHandle() {
                                     password={password}
                                     setUsername={setUsername}
                                     setPassword={setPassword}
+                                    loadingUser={loadingUser}
                                 />
                                 <hr class="my-4" />
                                 <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Create') }}>Need to create an account?</button>
@@ -137,6 +141,6 @@ export default function AccountHandle() {
 
                 </div>
             </div>
-        </div >
+        </div>
     )
 }

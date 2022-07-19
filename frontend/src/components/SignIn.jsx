@@ -1,6 +1,6 @@
 import Input from "./Input"
 
-export default function SignIn({ login, username, password, setUsername, setPassword }) {
+export default function SignIn({ login, username, password, setUsername, setPassword, loadingUser }) {
 
     return (
         <div>
@@ -22,7 +22,14 @@ export default function SignIn({ login, username, password, setUsername, setPass
                     disabled={false}
                 />
 
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign in</button>
+                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" disabled={loadingUser}>
+                    {!loadingUser ? 'Sign in' :
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    }
+
+                </button>
             </form>
             <hr class="my-4" />
             <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>

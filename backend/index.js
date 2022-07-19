@@ -61,6 +61,7 @@ app.get('/checkaccount', async (req, res) => {
     if (req.session.user) {
         const foundUser = await UserAccount.findOne({ username: req.session.user }).populate('favorites')
         const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name } })
+        console.log('sending info now...')
         res.json({ user: foundUser.username, favorites: favorites })
     }
 })
@@ -111,7 +112,7 @@ app.post('/login', async (req, res) => {
         })*/
         console.log(req.session)
         //send accessToken in json for front-end use
-        return res.status(200).json({ 'message': 'User logged in!' })
+        res.redirect('/checkaccount')
     } catch (error) {
         console.log(error)
         return res.status(500).json({ 'message': 'Internal Server Error' })
@@ -142,7 +143,7 @@ app.post('/addfavorite', async (req, res) => {
             station.name = req.body.stationName
             await station.save()
         }
-        const foundUser = await UserAccount.findOne({ username: req.body.userName })
+        const foundUser = await UserAccount.findOne({ username: req.body.loggedInUser })
         foundUser.favorites.push(station._id)
         console.log(foundUser)
         await foundUser.save()
