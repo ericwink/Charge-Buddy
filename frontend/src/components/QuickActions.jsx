@@ -6,7 +6,7 @@ import { UserContext } from "../Context/UserContext"
 export default function QuickActions(props) {
 
     const [needUpdate, setNeedUpdate] = useState(true)
-    const { userName } = useContext(UserContext)
+    const { loggedInUser } = useContext(UserContext)
 
     return (
         <div>
@@ -20,7 +20,7 @@ export default function QuickActions(props) {
                     <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div className="offcanvas-body">
-                    {!userName ? <h1>Sign in to post a comment!</h1> :
+                    {!loggedInUser ? <h1>Sign in to post a comment!</h1> :
                         <AddComment
                             stationID={props.id}
                             stationName={props.stationName}

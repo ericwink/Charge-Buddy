@@ -8,7 +8,7 @@ export default function AddComment({ stationName, stationID, needUpdate, setNeed
     const [comment, setComment] = useState('')
     const [rating, setRating] = useState(0)
     const [checked, setChecked] = useState({ star5: false, star4: false, star3: false, star2: false, star1: false })
-    const { userName } = useContext(UserContext)
+    const { loggedInUser } = useContext(UserContext)
 
     //tracks the value of the input text field to write a comment
     function commentChange(e) {
@@ -23,7 +23,7 @@ export default function AddComment({ stationName, stationID, needUpdate, setNeed
                 stationName: stationName,
                 comment: comment,
                 rating: rating,
-                author: userName
+                author: loggedInUser
             })
             setChecked({ 5: false, 4: false, 3: false, 2: false, 1: false })
             setNeedUpdate(!needUpdate)

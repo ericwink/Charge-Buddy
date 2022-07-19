@@ -67,16 +67,17 @@ app.get('/checkaccount', async (req, res) => {
 
 //handle user sign-up
 app.post('/signup', async (req, res) => {
-    const { email, password } = req.body
+    const { username, password } = req.body
+    console.log(username, password)
     try {
-        //check the database to see if a user with the email already exists
-        const foundUser = await UserAccount.findOne({ username: email })
+        //check the database to see if a user with the username already exists
+        const foundUser = await UserAccount.findOne({ username: username })
         if (foundUser) {
-            return res.status(400).json({ 'message': 'User account with that email already exists' })
+            return res.status(400).json({ 'message': 'User account with that username already exists' })
         } else {
             //if no user exists, create account and store password with bcrypt
             const hashPassword = await bcrypt.hash(password, saltRounds)
-            const newUser = new UserAccount({ username: email, password: hashPassword })
+            const newUser = new UserAccount({ username: username, password: hashPassword })
             await newUser.save()
             return res.status(200).json({ 'message': 'User account created successfully!' })
         }
@@ -88,9 +89,9 @@ app.post('/signup', async (req, res) => {
 
 //handle user sign-in and create a session on the server
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body
+    const { username, password } = req.body
     try {
-        const foundUser = await UserAccount.findOne({ username: email })
+        const foundUser = await UserAccount.findOne({ username: username })
         if (!foundUser) return res.status(400).json({ 'message': 'No user account found.' })
         //verify password with bcrypt
         const verify = await bcrypt.compare(password, foundUser.password)

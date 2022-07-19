@@ -4,15 +4,16 @@ import { UserContext } from "../Context/UserContext"
 import MyAccount from "./MyAccount"
 import SignIn from "./SignIn"
 import SignUp from "./SignUp"
+import UpdatedSignUp from "./UpdatedSignUp"
 
 export default function AccountHandle() {
 
     // axios.defaults.withCredentials = true
 
     const [displayState, setDisplayState] = useState('Sign In')
-    const [email, setemail] = useState('')
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const { userName, setUserName, favorites, setFavorites, clickFav } = useContext(UserContext)
+    const { loggedInUser, setloggedInUser, favorites, setFavorites, clickFav } = useContext(UserContext)
 
     const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
@@ -40,7 +41,7 @@ export default function AccountHandle() {
     const checkAccount = async () => {
         const response = await axios.get('/checkaccount', { withCredentials: true })
         console.log(response)
-        setUserName(response.data.user)
+        setloggedInUser(response.data.user)
         setFavorites([...response.data.favorites])
     }
 
@@ -49,10 +50,10 @@ export default function AccountHandle() {
         e.preventDefault();
         try {
             const response = await axios.post(`/signup`, {
-                email: email,
+                username: username,
                 password: password
             })
-            setemail('')
+            setUsername('')
             setPassword('')
             console.log(response)
             alertErr(response.data.message, 'success')
@@ -66,10 +67,10 @@ export default function AccountHandle() {
         e.preventDefault();
         try {
             const response = await axios.post(`/login`, {
-                email: email,
+                username: username,
                 password: password
             })
-            setemail('')
+            setUsername('')
             setPassword('')
             alertErr(response.data.message, 'success')
             checkAccount()
@@ -84,7 +85,7 @@ export default function AccountHandle() {
         try {
             const response = await axios.get('/logout')
             alertErr(response.data.message, 'success')
-            setUserName(null)
+            setloggedInUser(null)
         } catch (error) {
             alertErr(error.response.data.message, 'danger')
             console.log(error)
@@ -104,26 +105,31 @@ export default function AccountHandle() {
 
                     <div id="liveAlertPlaceholder"></div>
 
-                    {userName ? <MyAccount logout={logout} /> :
+                    {loggedInUser ? <MyAccount logout={logout} /> :
 
-                        displayState === 'Create' ? <div><SignUp
-                            createAccount={createAccount}
-                            email={email}
-                            password={password}
-                            setemail={setemail}
-                            setPassword={setPassword}
-                        />
-                            <hr class="my-4" />
-                            <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Sign In') }}>Already have an account?</button>
-                        </div>
+                        displayState === 'Create' ?
+                            <div>
+                                <UpdatedSignUp
+                                    createAccount={createAccount}
+                                    username={username}
+                                    setUsername={setUsername}
+                                    password={password}
+                                    setPassword={setPassword}
+                                />
+                                <hr class="my-4" />
+                                <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Sign In') }}>Already have an account?</button>
+                            </div>
 
-                            : <div><SignIn
-                                login={login}
-                                email={email}
-                                password={password}
-                                setemail={setemail}
-                                setPassword={setPassword}
-                            />
+                            :
+
+                            <div>
+                                <SignIn
+                                    login={login}
+                                    username={username}
+                                    password={password}
+                                    setUsername={setUsername}
+                                    setPassword={setPassword}
+                                />
                                 <hr class="my-4" />
                                 <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Create') }}>Need to create an account?</button>
                             </div>
@@ -131,6 +137,6 @@ export default function AccountHandle() {
 
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

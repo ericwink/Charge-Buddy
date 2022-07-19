@@ -103,3 +103,15 @@ h1 {
 .card-link {
     text-decoration: none;
 }
+
+.weak {
+    color: red;
+}
+
+.medium {
+    color: orange;
+}
+
+.strong {
+    color: green;
+}

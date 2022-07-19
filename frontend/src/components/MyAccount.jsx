@@ -3,12 +3,12 @@ import { useContext } from "react"
 
 export default function MyAccount({ logout }) {
 
-    const { userName, favorites } = useContext(UserContext)
+    const { loggedInUser, favorites } = useContext(UserContext)
 
 
     return (
         <div>
-            <h1>{userName}</h1>
+            <h1>{loggedInUser}</h1>
             <button className="w-100 py-2 mb-2 btn btn-primary rounded-3" onClick={() => logout()}>LOGOUT</button>
             <h2>Favorites:</h2>
             {favorites.map((fav) => {

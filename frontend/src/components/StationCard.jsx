@@ -5,7 +5,7 @@ import QuickActions from "./QuickActions"
 
 export default function StationCard({ stationInfo }) {
 
-    const { userName, clickFav, setClickFav } = useContext(UserContext)
+    const { loggedInUser, clickFav, setClickFav } = useContext(UserContext)
 
     const phaseOne = [stationInfo.street_address, stationInfo.city, stationInfo.state, stationInfo.zipCode].filter(Boolean).join("+");
     const phaseTwo = phaseOne.replace(/\s/g, '+')
@@ -17,7 +17,7 @@ export default function StationCard({ stationInfo }) {
             const response = await axios.post('/addfavorite', {
                 evID: stationInfo.id,
                 stationName: stationInfo.station_name,
-                userName: userName
+                loggedInUser: loggedInUser
             })
             setClickFav(!clickFav)
         } catch (error) {
@@ -31,7 +31,7 @@ export default function StationCard({ stationInfo }) {
                 <div className="card-body">
                     <h5 className="card-title">{stationInfo.station_name}</h5>
                     <small className="card-subtitle mb-2 text-muted">Access: {stationInfo.access_code}</small>
-                    {userName ? <button onClick={() => addToFavorites()}>Add Favorite</button> : null}
+                    {loggedInUser ? <button onClick={() => addToFavorites()}>Add Favorite</button> : null}
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">{stationInfo.street_address}<br />{stationInfo.city} {stationInfo.state} {stationInfo.zip}</li>

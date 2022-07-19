@@ -1,16 +1,16 @@
 import Input from "./Input"
 
-export default function SignIn({ login, email, password, setemail, setPassword }) {
+export default function SignIn({ login, username, password, setUsername, setPassword }) {
 
     return (
         <div>
             <form onSubmit={login}>
                 <Input
-                    onChange={(e) => { setemail(e.target.value) }}
-                    value={email}
-                    type='email'
-                    placeholder="email address"
-                    label='email address'
+                    onChange={(e) => { setUsername(e.target.value) }}
+                    value={username}
+                    type='text'
+                    placeholder="username"
+                    label='username'
                     disabled={false}
                 />
                 <Input
