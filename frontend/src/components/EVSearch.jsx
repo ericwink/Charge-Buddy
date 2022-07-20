@@ -194,9 +194,9 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                     </div>
 
                     {/* button selections */}
-                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" onClick={handleSearch} data-bs-toggle="offcanvas" data-bs-target="#offcanvas">Search</button>
-                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" onClick={clearSearch}>Clear</button>
-                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" onClick={() => { navigator.geolocation.getCurrentPosition(success, error, options); setLoadingLocation(true) }}>
+                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" disabled={loadingLocation} onClick={handleSearch} data-bs-toggle="offcanvas" data-bs-target="#offcanvas">Search</button>
+                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" disabled={loadingLocation} onClick={clearSearch}>Clear</button>
+                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" disabled={loadingLocation} onClick={() => { navigator.geolocation.getCurrentPosition(success, error, options); setLoadingLocation(true) }}>
                         {loadingLocation ? <div className="spinner-border" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div> : 'Locate Me!'}</button>

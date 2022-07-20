@@ -23,7 +23,7 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
 
     useEffect(() => {
         checkStrength()
-        setAllowSubmit((password !== '') && (verifyPass !== '') && (password === verifyPass) && (passRating === 'Medium' || passRating === 'Strong'))
+        setAllowSubmit((password !== '') && (verifyPass !== '') && (password === verifyPass) && (passRating === 'medium' || passRating === 'strong'))
     }, [password, verifyPass])
 
     const checkStrength = () => {
@@ -68,6 +68,7 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
             </div>
 
             {!password ? null : <h5>Password Strength is <span className={passRating}>{passRating}</span></h5>}
+            {passRating === 'weak' ? <span>Must be 'medium' or better to continue</span> : null}
 
             <br />
 

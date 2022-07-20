@@ -31,7 +31,7 @@ export default function StationCard({ stationInfo }) {
                 <div className="card-body">
                     <h5 className="card-title">{stationInfo.station_name}</h5>
                     <small className="card-subtitle mb-2 text-muted">Access: {stationInfo.access_code}</small>
-                    {loggedInUser ? <button onClick={() => addToFavorites()}>Add Favorite</button> : null}
+                    {loggedInUser ? <button onClick={() => addToFavorites()}><i class="fa-solid fa-circle-heart"></i></button> : null}
                 </div>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">{stationInfo.street_address}<br />{stationInfo.city} {stationInfo.state} {stationInfo.zip}</li>

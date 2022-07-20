@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { UserContext } from "../Context/UserContext"
 
-export default function EVComment({ stationID, body, date, id, deleteComment, rating, author }) {
+export default function EVComment({ stationID, body, date, commentID, deleteComment, rating, author }) {
 
     const { loggedInUser } = useContext(UserContext)
 
@@ -26,7 +26,7 @@ export default function EVComment({ stationID, body, date, id, deleteComment, ra
                 <p className="mb-1">{body}</p>
                 <small className="text-muted">{date}</small>
                 {loggedInUser === author ?
-                    <button className="btn btn-sm delete-comment" onClick={() => { deleteComment(stationID, id) }}><i class="fa-solid fa-trash"></i></button>
+                    <button className="btn btn-sm delete-comment" onClick={() => { deleteComment(stationID, commentID) }}><i class="fa-solid fa-trash"></i></button>
                     : null}
             </a>
         </div>

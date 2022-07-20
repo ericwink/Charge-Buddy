@@ -34,7 +34,8 @@ mongoose.connect('mongodb://localhost:27017/chargebuddy');
 const evStationSchema = new Schema({
     name: String,
     evID: Number,
-    comments: [{ body: String, date: String, rating: Number, author: String }]
+    // comments: [{ body: String, date: String, rating: Number, author: String }]
+    comments: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }]
 });
 
 //evStation model for mongoose
@@ -50,6 +51,17 @@ const userSchema = new Schema({
 //evStation model for mongoose
 const UserAccount = mongoose.model('UserAccount', userSchema)
 
+//comments schema
+const commentSchema = new Schema({
+    body: String,
+    date: String,
+    rating: Number,
+    author: { type: mongoose.Types.ObjectId, ref: 'UserAccount' }
+})
+
+//comment model
+const Comment = mongoose.model('Comment', commentSchema)
+
 const isAuthenticated = () => {
     if (req.session) {
         res.json({ user: req.session.user })
@@ -58,18 +70,20 @@ const isAuthenticated = () => {
 
 //find and send user info by session on server
 app.get('/checkaccount', async (req, res) => {
-    if (req.session.user) {
+    try {
+        if (!req.session.user) return res.status(500).json({ 'message': 'Something is wrong...' })
         const foundUser = await UserAccount.findOne({ username: req.session.user }).populate('favorites')
         const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name } })
         console.log('sending info now...')
         res.json({ user: foundUser.username, favorites: favorites })
+    } catch (error) {
+        console.log(error)
     }
 })
 
 //handle user sign-up
 app.post('/signup', async (req, res) => {
     const { username, password } = req.body
-    console.log(username, password)
     try {
         //check the database to see if a user with the username already exists
         const foundUser = await UserAccount.findOne({ username: username })
@@ -92,27 +106,27 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body
     try {
-        const foundUser = await UserAccount.findOne({ username: username })
+        const foundUser = await UserAccount.findOne({ username: username }).populate('favorites')
         if (!foundUser) return res.status(400).json({ 'message': 'No user account found.' })
+        const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name } })
         //verify password with bcrypt
         const verify = await bcrypt.compare(password, foundUser.password)
         if (!verify) return res.status(400).json({ 'message': 'Username or password incorrect' })
-
         //regenerate session, as suggestsed by session docs
         await req.session.regenerate(function (err) {
             if (err) console.log(err)
         })
-
         //store user information in session
         req.session.user = foundUser.username
-
         //save session before redirect to ensure page load does not happen before session is saved
         await req.session.save/*(function (err) {
             if (err) console.log(err)
         })*/
         console.log(req.session)
         //send accessToken in json for front-end use
-        res.redirect('/checkaccount')
+        // res.redirect('/checkaccount')
+        console.log('sending info now...')
+        res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ 'message': 'Internal Server Error' })
@@ -157,8 +171,9 @@ app.post('/addfavorite', async (req, res) => {
 app.get('/:station', async (req, res) => {
     const evID = req.params.station
     try {
-        const foundStation = await EVStation.findOne({ evID: evID })
+        const foundStation = await EVStation.findOne({ evID: evID }).populate({ path: 'comments', populate: { path: 'author', select: 'username -_id' } })
         if (foundStation) {
+            console.log('.author', foundStation)
             res.send(foundStation)
         }
     } catch (error) {
@@ -169,19 +184,26 @@ app.get('/:station', async (req, res) => {
 //post comments to station
 app.post('/:station', async (req, res) => {
     const evID = req.body.stationID
-    console.log(req.body)
     const today = new Date()
     try {
         const foundStation = await EVStation.findOne({ evID: evID })
+        const foundUser = await UserAccount.findOne({ username: req.body.author })
+        const newComment = new Comment
+        newComment.author = foundUser._id
+        newComment.body = req.body.comment
+        newComment.rating = req.body.rating
+        newComment.date = today.toDateString()
+        await newComment.save()
+        console.log(newComment)
         if (foundStation) {
-            await foundStation.comments.push({ author: req.body.author, body: req.body.comment, rating: req.body.rating, date: today.toDateString() })
+            await foundStation.comments.push(newComment._id)
             await foundStation.save()
             res.send('comment added')
         } else {
             const newStation = new EVStation
             newStation.evID = req.body.stationID
             newStation.name = req.body.stationName
-            await newStation.comments.push({ author: req.body.author, body: req.body.comment, rating: req.body.rating, date: today.toDateString() })
+            await newStation.comments.push(newComment._id)
             await newStation.save()
             res.send('station created, comment added')
         }
@@ -195,7 +217,8 @@ app.post('/:station', async (req, res) => {
 app.delete('/:station', async (req, res) => {
     try {
         const { stationID, commentID } = req.body
-        await EVStation.findOneAndUpdate({ evID: stationID }, { $pull: { comments: { _id: commentID } } }, { new: true })
+        await EVStation.findOneAndUpdate({ evID: stationID }, { $pull: { comments: commentID } }, { new: true })
+        await Comment.findByIdAndDelete(commentID)
         res.send('comment deleted')
     } catch (error) {
         console.log(error)
