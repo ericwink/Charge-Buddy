@@ -39,7 +39,7 @@ export default function AccountHandle() {
 
     //check that a user is signed in
     const checkAccount = async () => {
-        const response = await axios.get('/checkaccount', { withCredentials: true })
+        const response = await axios.get('/user/checkaccount', { withCredentials: true })
         setloggedInUser(response.data.user)
         setFavorites([...response.data.favorites])
         setLoadingUser(false)
@@ -49,7 +49,7 @@ export default function AccountHandle() {
     async function createAccount(e) {
         e.preventDefault();
         try {
-            const response = await axios.post(`/signup`, {
+            const response = await axios.post(`/user/signup`, {
                 username: username,
                 password: password
             })
@@ -66,7 +66,7 @@ export default function AccountHandle() {
         e.preventDefault();
         try {
             setLoadingUser(true)
-            const response = await axios.post(`/login`, {
+            const response = await axios.post(`/user/login`, {
                 username: username,
                 password: password
             })
@@ -85,7 +85,7 @@ export default function AccountHandle() {
     //logout the current user
     async function logout() {
         try {
-            const response = await axios.get('/logout')
+            const response = await axios.get('/user/logout')
             alertErr(response.data.message, 'success')
             setloggedInUser(null)
             setFavorites(null)
