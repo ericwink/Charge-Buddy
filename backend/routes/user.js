@@ -44,6 +44,7 @@ router.post('/signup', async (req, res) => {
 
 //handle user sign-in and create a session on the server
 router.post('/login', async (req, res) => {
+    console.log(req.body)
     const { username, password } = req.body
     try {
         const foundUser = await UserAccount.findOne({ username: username }).populate('favorites')
@@ -65,6 +66,7 @@ router.post('/login', async (req, res) => {
         // console.log(req.session)
         //send accessToken in json for front-end use
         console.log('sending info now...')
+        console.log(req.session)
         res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
         console.log(error)

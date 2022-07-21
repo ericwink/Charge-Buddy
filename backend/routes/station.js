@@ -7,12 +7,11 @@ const UserAccount = require('../models/UserAccount')
 const Comment = require('../models/Comment')
 
 //get comments by station id
-router.get('/', async (req, res) => {
-    const evID = req.params.station
+router.get('/:id', async (req, res) => {
+    const evID = req.params.id
     try {
         const foundStation = await EVStation.findOne({ evID: evID }).populate({ path: 'comments', populate: { path: 'author', select: 'username -_id' } })
         if (foundStation) {
-            console.log('.author', foundStation)
             res.send(foundStation)
         }
     } catch (error) {
@@ -21,7 +20,7 @@ router.get('/', async (req, res) => {
 })
 
 //post comments to station
-router.post('/', async (req, res) => {
+router.post('/addcomment', async (req, res) => {
     const evID = req.body.stationID
     const today = new Date()
     try {
@@ -33,7 +32,6 @@ router.post('/', async (req, res) => {
         newComment.rating = req.body.rating
         newComment.date = today.toDateString()
         await newComment.save()
-        console.log(newComment)
         if (foundStation) {
             await foundStation.comments.push(newComment._id)
             await foundStation.save()
@@ -53,7 +51,7 @@ router.post('/', async (req, res) => {
 })
 
 //remove a comment from a station
-router.delete('/', async (req, res) => {
+router.delete('/deletecomment', async (req, res) => {
     try {
         const { stationID, commentID } = req.body
         await EVStation.findOneAndUpdate({ evID: stationID }, { $pull: { comments: commentID } }, { new: true })

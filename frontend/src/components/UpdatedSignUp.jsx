@@ -1,5 +1,10 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import PasswordBar from "./PasswordBar";
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
 
 export default function UpdatedSignUp({ username, setUsername, password, setPassword, createAccount }) {
     //username and password requirements
@@ -13,9 +18,10 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
 
     //states
     const [verifyPass, setVerifyPass] = useState('')
-    const [passRating, setPassRating] = useState('Weak')
+    const [passRating, setPassRating] = useState('danger')
     const [nameRule, setNameRule] = useState(false)
     const [allowSubmit, setAllowSubmit] = useState(true)
+    const [passPerc, setPassPerc] = useState(33)
 
     useEffect(() => {
         setNameRule(user_regex.test(username))
@@ -23,70 +29,70 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
 
     useEffect(() => {
         checkStrength()
-        setAllowSubmit((password !== '') && (verifyPass !== '') && (password === verifyPass) && (passRating === 'medium' || passRating === 'strong'))
+        setAllowSubmit((password !== '') && (verifyPass !== '') && (password === verifyPass) && (passPerc === 66 || passPerc === 100))
     }, [password, verifyPass])
 
     const checkStrength = () => {
-        if (strongRegex.test(password)) {
-            setPassRating('strong')
+        if (!password) { setPassPerc(0) }
+        else if (strongRegex.test(password)) {
+            setPassRating('success')
+            setPassPerc(100)
         } else if (mediumRegex.test(password)) {
-            setPassRating('medium')
-        } else setPassRating('weak')
+            setPassRating('caution')
+            setPassPerc(66)
+        } else {
+            setPassRating('danger')
+            setPassPerc(33)
+        }
     }
 
 
     return (
-        <div>
-            <div class="form-floating mb-3">
-                <input
-                    autoComplete="off"
-                    type="text"
-                    class="form-control"
-                    id="floatingInput"
-                    placeholder="username"
+        <Form onSubmit={createAccount}>
+            <FloatingLabel controlId="floatingUsername" label="Username" className='mb-3'>
+                <Form.Control
+                    type='text'
+                    autoComplete='off'
+                    placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
-                <label for="floatingInput">Username</label>
-            </div>
+            </FloatingLabel>
 
             {!username ? null : nameRule ? <h5>Meets Criteria!</h5> : <h5>Doesn't meet criteria...</h5>}
 
             <br />
 
-            <div class="form-floating mb-3">
-                <input
-                    autoComplete="off"
-                    type="password"
-                    class="form-control"
-                    id="createpassword"
+            <FloatingLabel controlId="floatingPassword" label="Password" className='mb-3'>
+                <Form.Control
+                    type='password'
+                    autoComplete='off'
                     placeholder="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <label for="createpassword">Password</label>
-            </div>
+            </FloatingLabel>
 
-            {!password ? null : <h5>Password Strength is <span className={passRating}>{passRating}</span></h5>}
-            {passRating === 'weak' ? <span>Must be 'medium' or better to continue</span> : null}
+            <PasswordBar status={passPerc} variant={passRating} />
 
             <br />
 
-            <div class="form-floating mb-3">
-                <input
-                    autoComplete="off"
-                    type="password"
-                    class="form-control"
-                    id="verifypassword"
+            <FloatingLabel controlId="floatingPassword2" label="Verify Password" className='mb-3'>
+                <Form.Control
+                    type='password'
+                    autoComplete='off'
                     placeholder="verify password"
                     value={verifyPass}
                     onChange={(e) => setVerifyPass(e.target.value)}
                 />
-                <label for="verifypassword">Verify Password</label>
-            </div>
-            {!verifyPass ? null : allowSubmit ? <h5>Passwords Match!</h5> : <h5>Passwords dont match!</h5>
+            </FloatingLabel>
+
+            {
+                !verifyPass ? null : allowSubmit ? <h5>Passwords Match!</h5> : <h5>Passwords dont match!</h5>
             }
-            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" disabled={!allowSubmit} onClick={createAccount}>Sign up</button>
-        </div>
+            <div className="d-grid gap-2">
+                <Button variant="primary" size='lg' type='submit' disabled={!allowSubmit}>Sign up</Button>
+            </div>
+        </Form>
     )
 }

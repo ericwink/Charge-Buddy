@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 export default function StationRating({ setRating, changeRadio, checked }) {
 
     function handleClick(e) {

@@ -2,6 +2,9 @@ import axios from "axios"
 import { useContext, useState } from "react";
 import { UserContext } from "../Context/UserContext";
 import StationRating from "./StationRating";
+import InputGroup from 'react-bootstrap/InputGroup'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form';
 
 export default function AddComment({ stationName, stationID, needUpdate, setNeedUpdate }) {
 
@@ -18,7 +21,7 @@ export default function AddComment({ stationName, stationID, needUpdate, setNeed
     // send comment data to the server to save
     async function sendComment() {
         try {
-            await axios.post(`${stationID}`, {
+            await axios.post('/station/addcomment', {
                 stationID: stationID,
                 stationName: stationName,
                 comment: comment,
@@ -59,10 +62,10 @@ export default function AddComment({ stationName, stationID, needUpdate, setNeed
     return (
         <div>
             <StationRating setRating={setRating} changeRadio={changeRadio} checked={checked} />
-            <div className="input-group">
-                <button onClick={addItem} className="input-group-text btn btn-success btn-sm">Add<br />Comment</button>
-                <textarea onChange={commentChange} className="form-control" value={comment} aria-label="Add Comment"></textarea>
-            </div>
+            <InputGroup className="mb-1">
+                <Form.Control as='textarea' onChange={commentChange} value={comment}></Form.Control>
+                <Button variant='success' size='sm' onClick={addItem}>Submit</Button>
+            </InputGroup>
         </div>
     )
 }

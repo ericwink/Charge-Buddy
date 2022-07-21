@@ -89,8 +89,3 @@ export default App;
 //To Visit
 //https://afdc.energy.gov/fuels/electricity_locations.html#/find/nearest?fuel=ELEC
 //https://www.plugshare.com/location/369243
-
-
-//CRUD
-//give ability to save stations to favorites
-  //remove from favorites

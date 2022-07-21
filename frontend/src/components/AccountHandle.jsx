@@ -4,6 +4,9 @@ import { UserContext } from "../Context/UserContext"
 import MyAccount from "./MyAccount"
 import SignIn from "./SignIn"
 import UpdatedSignUp from "./UpdatedSignUp"
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import Button from 'react-bootstrap/Button';
+import DisplayAlert from "./DisplayAlert"
 
 export default function AccountHandle() {
 
@@ -14,20 +17,12 @@ export default function AccountHandle() {
     const [password, setPassword] = useState('')
     const { loggedInUser, setloggedInUser, favorites, setFavorites, clickFav } = useContext(UserContext)
     const [loadingUser, setLoadingUser] = useState(false)
-
-    const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
-
-    const alertErr = (message, type) => {
-        const wrapper = document.createElement('div')
-        wrapper.innerHTML = [
-            `<div class="alert alert-${type} alert-dismissible" role="alert">`,
-            `   <div>${message}</div>`,
-            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-            '</div>'
-        ].join('')
-
-        alertPlaceholder.append(wrapper)
-    }
+    const [showAlert, setShowAlert] = useState(false);
+    const [msg, setMsg] = useState('')
+    const [variant, setVariant] = useState('')
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         checkAccount()
@@ -36,6 +31,10 @@ export default function AccountHandle() {
     useEffect(() => {
         checkAccount()
     }, [clickFav])
+
+    useEffect(() => {
+        setShowAlert(false)
+    }, [username, password])
 
     //check that a user is signed in
     const checkAccount = async () => {
@@ -55,9 +54,13 @@ export default function AccountHandle() {
             })
             setUsername('')
             setPassword('')
-            alertErr(response.data.message, 'success')
+            setShowAlert(true)
+            setVariant('success')
+            setMsg(response.data.message)
         } catch (error) {
-            alertErr(error.response.data.message, 'danger')
+            setShowAlert(true)
+            setVariant('danger')
+            setMsg(error.response.data.message)
         }
     }
 
@@ -76,9 +79,10 @@ export default function AccountHandle() {
             setUsername('')
             setPassword('')
         } catch (error) {
-            alertErr(error.response.data.message, 'danger')
-            console.log(error)
             setLoadingUser(false)
+            setShowAlert(true)
+            setVariant('danger')
+            setMsg(error.response.data.message)
         }
     }
 
@@ -86,27 +90,38 @@ export default function AccountHandle() {
     async function logout() {
         try {
             const response = await axios.get('/user/logout')
-            alertErr(response.data.message, 'success')
+            setShowAlert(true)
+            setVariant('success')
+            setMsg(response.data.message)
             setloggedInUser(null)
             setFavorites(null)
         } catch (error) {
-            alertErr(error.response.data.message, 'danger')
-            console.log(error)
+            setShowAlert(true)
+            setVariant('danger')
+            setMsg(error.response.data.message)
         }
     }
 
     return (
 
         <div className="AccountHandle">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">My Account</button>
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasRightLabel">{displayState}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
 
-                    <div id="liveAlertPlaceholder"></div>
+            <Button variant="primary" onClick={handleShow}>
+                My Account
+            </Button>
+
+            <Offcanvas placement='end' show={show} onHide={handleClose}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>{displayState}</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+
+                    <DisplayAlert
+                        msg={msg}
+                        variant={variant}
+                        showAlert={showAlert}
+                        setShowAlert={setShowAlert}
+                    />
 
                     {loggedInUser ? <MyAccount logout={logout} /> :
 
@@ -122,9 +137,7 @@ export default function AccountHandle() {
                                 <hr class="my-4" />
                                 <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Sign In') }}>Already have an account?</button>
                             </div>
-
                             :
-
                             <div>
                                 <SignIn
                                     login={login}
@@ -135,12 +148,13 @@ export default function AccountHandle() {
                                     loadingUser={loadingUser}
                                 />
                                 <hr class="my-4" />
-                                <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Create') }}>Need to create an account?</button>
+                                <div className="d-grid gap-2">
+                                    <Button variant="outline" onClick={() => { setDisplayState('Create') }}>Need to create an account?</Button>
+                                </div>
                             </div>
                     }
-
-                </div>
-            </div>
+                </Offcanvas.Body>
+            </Offcanvas>
         </div>
     )
 }

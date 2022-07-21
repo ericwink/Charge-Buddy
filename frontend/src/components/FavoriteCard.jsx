@@ -1,12 +1,16 @@
+import Card from 'react-bootstrap/Card'
+import Button from 'react-bootstrap/Button'
+
 export default function FavoriteCard({ name }) {
 
     return (
-        <div className="card mb-2" >
-            <div className="card-body">
-                <h5 className="card-title">{name}</h5>
-                <a href="#" className="btn"><i class="fa-solid fa-map-location-dot"></i></a>
-                <a href="#" className="btn"><i class="fa-solid fa-heart-circle-xmark"></i></a>
-            </div>
-        </div>)
 
+        <Card className='mb-2'>
+            <Card.Body>
+                <Card.Title>{name}</Card.Title>
+                <Button variant='outline'><i class="fa-solid fa-map-location-dot" /></Button>
+                <Button variant='outline'><i class="fa-solid fa-heart-circle-xmark" /></Button>
+            </Card.Body>
+        </Card>
+    )
 }

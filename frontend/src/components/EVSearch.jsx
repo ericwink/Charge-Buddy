@@ -4,7 +4,12 @@ import usePlacesAutocomplete, {
     getLatLng,
 } from "use-places-autocomplete";
 import axios from "axios";
-import Input from "./Input";
+//react-bootstrap
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function EVSearch({ updateFuelStations, panToUserLocation }) {
     const [zipCode, setZipCode] = useState('')
@@ -17,6 +22,10 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
     const [visible, setVisible] = useState(false)
     const [addyLock, setAddyLock] = useState(false)
     const [loadingLocation, setLoadingLocation] = useState(false)
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
 
     //clear all data in search boxes
     function clearSearch() {
@@ -45,7 +54,6 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         try {
             const fullLink = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=${process.env.REACT_APP_EV_API_KEY}&location=${address}&radius=${miles}&fuel_type=ELEC&limit=200`
             const results = await axios.get(fullLink)
-            console.log(results)
             updateFuelStations(results.data.fuel_stations)
         } catch (error) {
             console.log(error)
@@ -57,7 +65,6 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         try {
             const fullLink = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=${process.env.REACT_APP_EV_API_KEY}&latitude=${userLatitude}&longitude=${userLongitude}&radius=${miles}&fuel_type=ELEC&limit=200`
             const results = await axios.get(fullLink)
-            console.log(results)
             updateFuelStations(results.data.fuel_stations)
             panToUserLocation(userLatitude, userLongitude)
         } catch (error) {
@@ -74,7 +81,8 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         });
     }
 
-    async function handleSearch() {
+    async function handleSearch(e) {
+        e.preventDefault()
         if (street) {
             addressFormat() //formats the address and then searches EV Stations by address
         } else if (userLatitude) {
@@ -113,96 +121,103 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
 
     return (
         <div className="EVSearch">
-            <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSearch" aria-controls="offcanvasSearch">
-                Search
-            </button>
+            <Button variant="primary" onClick={handleShow}>Search</Button>
 
-            <div className="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSearch" aria-labelledby="offcanvasExampleLabel">
-                <div className="offcanvas-header">
-                    <h5 className="offcanvas-title" id="offcanvasExampleLabel">EV Charging Station Search</h5>
-                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div className="offcanvas-body">
-                    <div>
-                        Enter a location (not all fields required), and distance to populate a list of EV Charging Stations
-                    </div>
-                    <Input
-                        onChange={(e) => { setStreet(e.target.value) }}
-                        value={street}
-                        type='text'
-                        placeholder='Street Address'
-                        label='Street Address'
-                        disabled={addyLock}
-                    />
-                    <Input
-                        onChange={(e) => { setCity(e.target.value) }}
-                        value={city}
-                        type='text'
-                        placeholder='City'
-                        label='City'
-                        disabled={addyLock}
-                    />
-                    <Input
-                        onChange={(e) => { setState(e.target.value) }}
-                        value={state}
-                        type='text'
-                        placeholder='State'
-                        label='State'
-                        disabled={addyLock}
-                    />
-                    <Input
-                        onChange={(e) => { setZipCode(e.target.value) }}
-                        value={zipCode}
-                        type='text'
-                        placeholder='Zip Code'
-                        label='Zip Code'
-                        disabled={addyLock}
-                    />
+            <Offcanvas show={show} onHide={handleClose}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>EV Charging Station Search</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    Enter a location (not all fields required), and distance to populate a list of EV Charging Stations
 
-                    {/* lat lng fields, invisible by default */}
-                    {visible ? <div>
-                        <Input
-                            onChange={(e) => { setUserLatitude(e.target.value) }}
-                            value={userLatitude}
-                            type='text'
-                            placeholder='Latitude'
-                            label='Latitude'
-                            disabled={addyLock}
-                        />
-                        <Input
-                            onChange={(e) => { setUserLongitude(e.target.value) }}
-                            value={userLongitude}
-                            type='text'
-                            placeholder='Longitude'
-                            label='Longitude'
-                            disabled={addyLock}
-                        />
-                    </div> : null}
+                    <Form onSubmit={handleSearch}>
+                        <FloatingLabel controlId="floatingStreet" label='Street Address' className='mb-3'>
+                            <Form.Control
+                                type='text'
+                                placeholder='Street Address'
+                                value={street}
+                                onChange={(e) => { setStreet(e.target.value) }}
+                                disabled={addyLock}
+                            />
+                        </FloatingLabel>
 
-                    {/* radio select for miles */}
-                    <div className="form-check form-check-inline">
-                        <input onClick={() => { setMiles(10) }} className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" defaultChecked />
-                        <label className="form-check-label" for="inlineRadio1">10 Miles</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input onClick={() => { setMiles(25) }} className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
-                        <label className="form-check-label" for="inlineRadio2">25 Miles</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input onClick={() => { setMiles(50) }} className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" />
-                        <label className="form-check-label" for="inlineRadio3">50 miles</label>
-                    </div>
+                        <FloatingLabel controlId="floatingCity" label='City' className='mb-3'>
+                            <Form.Control
+                                type='text'
+                                placeholder='City'
+                                value={city}
+                                onChange={(e) => { setCity(e.target.value) }}
+                                disabled={addyLock}
+                            />
+                        </FloatingLabel>
 
-                    {/* button selections */}
-                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" disabled={loadingLocation} onClick={handleSearch} data-bs-toggle="offcanvas" data-bs-target="#offcanvas">Search</button>
-                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" disabled={loadingLocation} onClick={clearSearch}>Clear</button>
-                    <button className="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" disabled={loadingLocation} onClick={() => { navigator.geolocation.getCurrentPosition(success, error, options); setLoadingLocation(true) }}>
-                        {loadingLocation ? <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div> : 'Locate Me!'}</button>
+
+                        <FloatingLabel controlId="floatingState" label='State' className='mb-3'>
+                            <Form.Control
+                                type='text'
+                                placeholder='State'
+                                value={state}
+                                onChange={(e) => { setState(e.target.value) }}
+                                disabled={addyLock}
+                            />
+                        </FloatingLabel>
+
+                        <FloatingLabel controlId="floatingZip" label='Zip Code' className='mb-3'>
+                            <Form.Control
+                                type='text'
+                                placeholder='Zip Code'
+                                value={zipCode}
+                                onChange={(e) => { setZipCode(e.target.value) }}
+                                disabled={addyLock}
+                            />
+                        </FloatingLabel>
+
+                        {/* lat lng fields, invisible by default */}
+                        {visible ? <div>
+                            <FloatingLabel controlId="floatingZip" label='Latitude' className='mb-3'>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Latitude'
+                                    value={userLatitude}
+                                    onChange={(e) => { setUserLatitude(e.target.value) }}
+                                    disabled={addyLock}
+                                />
+                            </FloatingLabel>
+
+                            <FloatingLabel controlId="floatingZip" label='Longitude' className='mb-3'>
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Longitude'
+                                    value={userLongitude}
+                                    onChange={(e) => { setUserLongitude(e.target.value) }}
+                                    disabled={addyLock}
+                                />
+                            </FloatingLabel>
+
+                        </div> : null}
+
+                        {/* radio select for miles */}
+                        <Form.Check name='miles' inline type='radio' label='10 Miles' id='10miles' onClick={() => { setMiles(10) }} defaultChecked />
+                        <Form.Check name='miles' inline type='radio' label='25 Miles' id='25miles' onClick={() => { setMiles(25) }} />
+                        <Form.Check name='miles' inline type='radio' label='50 Miles' id='50miles' onClick={() => { setMiles(50) }} />
+
+                        {/* button selections */}
+                        <div className="d-grid gap-2">
+                            <Button variant="outline-primary" size='lg' disabled={loadingLocation} onClick={handleClose} type='submit'>Search</Button>
+                            <Button variant="outline-primary" size='lg' disabled={loadingLocation} onClick={clearSearch}>Clear</Button>
+                            <Button variant="outline-primary" size='lg' disabled={loadingLocation} onClick={() => { navigator.geolocation.getCurrentPosition(success, error, options); setLoadingLocation(true) }}>
+                                {!loadingLocation ? 'Locate Me!' :
+                                    <Spinner animation="border" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </Spinner>
+                                }
+                            </Button>
+                        </div>
+                    </Form>
                     {visible ? <p>Click Clear to Search By Address</p> : null}
-                </div>
-            </div>
+                </Offcanvas.Body>
+            </Offcanvas>
+
         </div>
     )
 }

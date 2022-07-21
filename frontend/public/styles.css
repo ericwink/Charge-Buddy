@@ -104,14 +104,16 @@ h1 {
     text-decoration: none;
 }
 
-.weak {
+.favorite {
     color: red;
 }
 
-.medium {
-    color: orange;
+.favorite:hover {
+    cursor: pointer;
+    color: darkred
 }
 
-.strong {
-    color: green;
+.notfavorite:hover {
+    cursor: pointer;
+    color: black;
 }

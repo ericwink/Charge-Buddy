@@ -36,7 +36,7 @@ app.use(session({
 
 //routes
 app.use('/user', require('./routes/user'))
-app.use('/:station', require('./routes/station'))
+app.use('/station', require('./routes/station'))
 
 
 app.listen(port, () => {

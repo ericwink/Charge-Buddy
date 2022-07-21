@@ -1,47 +1,45 @@
-import Input from "./Input"
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function SignIn({ login, username, password, setUsername, setPassword, loadingUser }) {
 
     return (
         <div>
             <form onSubmit={login}>
-                <Input
-                    onChange={(e) => { setUsername(e.target.value) }}
-                    value={username}
-                    type='text'
-                    placeholder="username"
-                    label='username'
-                    disabled={false}
-                />
-                <Input
-                    onChange={(e) => { setPassword(e.target.value) }}
-                    value={password}
-                    type='password'
-                    placeholder="Password"
-                    label='Password'
-                    disabled={false}
-                />
 
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" disabled={loadingUser}>
-                    {!loadingUser ? 'Sign in' :
-                        <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
-                    }
+                <FloatingLabel controlId="floatingUsername" label="Username" className='mb-3'>
+                    <Form.Control
+                        type='text'
+                        autoComplete='off'
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => { setUsername(e.target.value) }}
+                    />
+                </FloatingLabel>
 
-                </button>
+                <FloatingLabel controlId="floatingUsername" label='Password' className='mb-3'>
+                    <Form.Control
+                        type='password'
+                        autoComplete='off'
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => { setPassword(e.target.value) }}
+                    />
+                </FloatingLabel>
+
+                <div className="d-grid gap-2">
+                    <Button variant="primary" size='lg' disabled={loadingUser} type='submit'>
+                        {!loadingUser ? 'Sign in' :
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                        }
+                    </Button>
+                </div>
+
             </form>
-            <hr class="my-4" />
-            <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-            <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="submit">
-                Sign in with Twitter
-            </button>
-            <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="submit">
-                Sign in with Facebook
-            </button>
-            <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
-                Sign in with GitHub
-            </button>
         </div>
     )
 }
