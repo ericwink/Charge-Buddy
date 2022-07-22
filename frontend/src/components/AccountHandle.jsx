@@ -17,6 +17,7 @@ export default function AccountHandle() {
     const [password, setPassword] = useState('')
     const { loggedInUser, setloggedInUser, favorites, setFavorites, clickFav } = useContext(UserContext)
     const [loadingUser, setLoadingUser] = useState(false)
+    const [successSignUp, setSuccessSignUp] = useState(false)
     const [showAlert, setShowAlert] = useState(false);
     const [msg, setMsg] = useState('')
     const [variant, setVariant] = useState('')
@@ -33,8 +34,15 @@ export default function AccountHandle() {
     }, [clickFav])
 
     useEffect(() => {
-        setShowAlert(false)
-    }, [username, password])
+        setUsername('')
+        setPassword('')
+    }, [displayState, successSignUp])
+
+    //handle user switching from 'create account' to 'sign in'
+    const handleSwitch = () => {
+        displayState === 'Sign In' ? setDisplayState('Create Account') : setDisplayState('Sign In')
+        setSuccessSignUp(false)
+    }
 
     //check that a user is signed in
     const checkAccount = async () => {
@@ -52,11 +60,10 @@ export default function AccountHandle() {
                 username: username,
                 password: password
             })
-            setUsername('')
-            setPassword('')
             setShowAlert(true)
             setVariant('success')
             setMsg(response.data.message)
+            setSuccessSignUp(true)
         } catch (error) {
             setShowAlert(true)
             setVariant('danger')
@@ -76,8 +83,6 @@ export default function AccountHandle() {
             setloggedInUser(response.data.user)
             setFavorites([...response.data.favorites])
             setLoadingUser(false)
-            setUsername('')
-            setPassword('')
         } catch (error) {
             setLoadingUser(false)
             setShowAlert(true)
@@ -107,8 +112,7 @@ export default function AccountHandle() {
         <div className="AccountHandle">
 
             <Button variant="primary" onClick={handleShow}>
-                My Account
-            </Button>
+                <i class="fa-solid fa-user"></i></Button>
 
             <Offcanvas placement='end' show={show} onHide={handleClose}>
                 <Offcanvas.Header closeButton>
@@ -125,7 +129,7 @@ export default function AccountHandle() {
 
                     {loggedInUser ? <MyAccount logout={logout} /> :
 
-                        displayState === 'Create' ?
+                        displayState === 'Create Account' && !successSignUp ?
                             <div>
                                 <UpdatedSignUp
                                     createAccount={createAccount}
@@ -133,9 +137,12 @@ export default function AccountHandle() {
                                     setUsername={setUsername}
                                     password={password}
                                     setPassword={setPassword}
+                                    successSignUp={successSignUp}
                                 />
                                 <hr class="my-4" />
-                                <button className="w-100 py-2 mb-2 btn btn-outline rounded-3" onClick={() => { setDisplayState('Sign In') }}>Already have an account?</button>
+                                <div className="d-grid gap-2">
+                                    <Button variant="outline" onClick={handleSwitch}>Already have an account?</Button>
+                                </div>
                             </div>
                             :
                             <div>
@@ -149,12 +156,12 @@ export default function AccountHandle() {
                                 />
                                 <hr class="my-4" />
                                 <div className="d-grid gap-2">
-                                    <Button variant="outline" onClick={() => { setDisplayState('Create') }}>Need to create an account?</Button>
+                                    <Button variant="outline" onClick={handleSwitch}>Need to create an account?</Button>
                                 </div>
                             </div>
                     }
                 </Offcanvas.Body>
             </Offcanvas>
-        </div>
+        </div >
     )
 }

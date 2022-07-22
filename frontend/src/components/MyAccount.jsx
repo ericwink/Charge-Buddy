@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 export default function MyAccount({ logout }) {
 
     const { loggedInUser, favorites } = useContext(UserContext)
+    console.log(favorites)
 
 
     return (
@@ -17,7 +18,7 @@ export default function MyAccount({ logout }) {
             <h2>Favorites:</h2>
             {favorites.map((fav, index) => {
                 return (
-                    <FavoriteCard name={fav.name} key={index} />
+                    <FavoriteCard name={fav.name} key={index} evID={fav.evID} />
                 )
             })}
 

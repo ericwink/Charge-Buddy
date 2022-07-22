@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import PasswordBar from "./PasswordBar";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-
+import UsernameChecklist from "./UsernameChecklist";
+import PasswordChecklist from "./PasswordChecklist";
 
 export default function UpdatedSignUp({ username, setUsername, password, setPassword, createAccount }) {
     //username and password requirements
-    const user_regex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/; //start with lower or upper, followed by 3-23 lower, upper, digit, hyphen, underscore
+    //start with lower or upper, followed by 3-23 lower, upper, digit, hyphen, underscore
+    const user_regex = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 
     //strong strength must contain at least 8 characters, including one upper case, one number and one special character
     var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
@@ -18,34 +19,12 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
 
     //states
     const [verifyPass, setVerifyPass] = useState('')
-    const [passRating, setPassRating] = useState('danger')
-    const [nameRule, setNameRule] = useState(false)
     const [allowSubmit, setAllowSubmit] = useState(true)
-    const [passPerc, setPassPerc] = useState(33)
+    const [focus, setFocus] = useState('')
 
     useEffect(() => {
-        setNameRule(user_regex.test(username))
-    }, [username])
-
-    useEffect(() => {
-        checkStrength()
-        setAllowSubmit((password !== '') && (verifyPass !== '') && (password === verifyPass) && (passPerc === 66 || passPerc === 100))
-    }, [password, verifyPass])
-
-    const checkStrength = () => {
-        if (!password) { setPassPerc(0) }
-        else if (strongRegex.test(password)) {
-            setPassRating('success')
-            setPassPerc(100)
-        } else if (mediumRegex.test(password)) {
-            setPassRating('caution')
-            setPassPerc(66)
-        } else {
-            setPassRating('danger')
-            setPassPerc(33)
-        }
-    }
-
+        setAllowSubmit((user_regex.test(username)) && (password !== '') && (verifyPass !== '') && (password === verifyPass) && (mediumRegex.test(password) || strongRegex.test(password)))
+    }, [password, verifyPass, username])
 
     return (
         <Form onSubmit={createAccount}>
@@ -56,11 +35,11 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    onFocus={() => setFocus('username')}
                 />
             </FloatingLabel>
 
-            {!username ? null : nameRule ? <h5>Meets Criteria!</h5> : <h5>Doesn't meet criteria...</h5>}
-
+            {focus === 'username' ? <UsernameChecklist username={username} /> : null}
             <br />
 
             <FloatingLabel controlId="floatingPassword" label="Password" className='mb-3'>
@@ -70,29 +49,31 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
                     placeholder="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setFocus('password')}
                 />
             </FloatingLabel>
 
-            <PasswordBar status={passPerc} variant={passRating} />
-
+            {focus === 'password' ? <PasswordChecklist password={password} /> : null}
             <br />
 
-            <FloatingLabel controlId="floatingPassword2" label="Verify Password" className='mb-3'>
+            <FloatingLabel controlId="floatingPassword2" label='Verify Password' className='mb-3'>
                 <Form.Control
                     type='password'
                     autoComplete='off'
                     placeholder="verify password"
                     value={verifyPass}
                     onChange={(e) => setVerifyPass(e.target.value)}
+                    onFocus={() => setFocus('verifypass')}
                 />
             </FloatingLabel>
 
             {
-                !verifyPass ? null : allowSubmit ? <h5>Passwords Match!</h5> : <h5>Passwords dont match!</h5>
+                focus === 'verifypass' ? !verifyPass ? null : allowSubmit ? <div className="checker"><small>Passwords Match! <i class="fa-solid fa-check"></i></small></div> : <div className="checker"><small>Passwords dont match! <i class="fa-solid fa-x"></i></small></div> : null
             }
             <div className="d-grid gap-2">
-                <Button variant="primary" size='lg' type='submit' disabled={!allowSubmit}>Sign up</Button>
+                <Button variant="primary" size='lg' type='submit' disabled={!allowSubmit}>Create Account</Button>
             </div>
-        </Form>
+        </Form >
+
     )
 }

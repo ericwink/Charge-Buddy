@@ -121,7 +121,7 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
 
     return (
         <div className="EVSearch">
-            <Button variant="primary" onClick={handleShow}>Search</Button>
+            <Button variant="primary" onClick={handleShow}><i class="fa-solid fa-magnifying-glass"></i></Button>
 
             <Offcanvas show={show} onHide={handleClose}>
                 <Offcanvas.Header closeButton>

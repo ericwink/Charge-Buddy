@@ -117,3 +117,16 @@ h1 {
     cursor: pointer;
     color: black;
 }
+
+.fa-x {
+    color: red;
+}
+
+.fa-check {
+    color: green;
+}
+
+.checker {
+    font-size: .9rem;
+    font-style: italic;
+}
