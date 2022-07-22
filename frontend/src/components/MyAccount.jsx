@@ -3,11 +3,9 @@ import { useContext } from "react"
 import FavoriteCard from "./FavoriteCard"
 import Button from 'react-bootstrap/Button'
 
-export default function MyAccount({ logout }) {
+export default function MyAccount({ logout, updateFuelStations, panToUserLocation }) {
 
     const { loggedInUser, favorites } = useContext(UserContext)
-    console.log(favorites)
-
 
     return (
         <div>
@@ -18,7 +16,13 @@ export default function MyAccount({ logout }) {
             <h2>Favorites:</h2>
             {favorites.map((fav, index) => {
                 return (
-                    <FavoriteCard name={fav.name} key={index} evID={fav.evID} />
+                    <FavoriteCard
+                        key={index}
+                        updateFuelStations={updateFuelStations}
+                        panToUserLocation={panToUserLocation}
+                        name={fav.name}
+                        favID={fav.id}
+                        evID={fav.evID} />
                 )
             })}
 

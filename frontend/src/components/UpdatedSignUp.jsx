@@ -68,7 +68,7 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
             </FloatingLabel>
 
             {
-                focus === 'verifypass' ? !verifyPass ? null : allowSubmit ? <div className="checker"><small>Passwords Match! <i class="fa-solid fa-check"></i></small></div> : <div className="checker"><small>Passwords dont match! <i class="fa-solid fa-x"></i></small></div> : null
+                focus === 'verifypass' ? !verifyPass ? null : allowSubmit ? <div className="checker"><small><i class="fa-solid fa-check"></i> Passwords Match!</small></div> : <div className="checker"><small><i class="fa-solid fa-x"></i> Passwords dont match!</small></div> : null
             }
             <div className="d-grid gap-2">
                 <Button variant="primary" size='lg' type='submit' disabled={!allowSubmit}>Create Account</Button>

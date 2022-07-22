@@ -8,7 +8,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Button from 'react-bootstrap/Button';
 import DisplayAlert from "./DisplayAlert"
 
-export default function AccountHandle() {
+export default function AccountHandle({ updateFuelStations, panToUserLocation }) {
 
     // axios.defaults.withCredentials = true
 
@@ -127,7 +127,11 @@ export default function AccountHandle() {
                         setShowAlert={setShowAlert}
                     />
 
-                    {loggedInUser ? <MyAccount logout={logout} /> :
+                    {loggedInUser ?
+                        <MyAccount
+                            updateFuelStations={updateFuelStations}
+                            panToUserLocation={panToUserLocation}
+                            logout={logout} /> :
 
                         displayState === 'Create Account' && !successSignUp ?
                             <div>

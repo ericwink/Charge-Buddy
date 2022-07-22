@@ -54,6 +54,7 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         try {
             const fullLink = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=${process.env.REACT_APP_EV_API_KEY}&location=${address}&radius=${miles}&fuel_type=ELEC&limit=200`
             const results = await axios.get(fullLink)
+            console.log(results)
             updateFuelStations(results.data.fuel_stations)
         } catch (error) {
             console.log(error)

@@ -21,7 +21,7 @@ export default function AddComment({ stationName, stationID, needUpdate, setNeed
     // send comment data to the server to save
     async function sendComment() {
         try {
-            await axios.post('/station/addcomment', {
+            await axios.post('/station/comment', {
                 stationID: stationID,
                 stationName: stationName,
                 comment: comment,

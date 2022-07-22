@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 })
 
 //post comments to station
-router.post('/addcomment', async (req, res) => {
+router.post('/comment', async (req, res) => {
     const evID = req.body.stationID
     const today = new Date()
     try {
@@ -51,7 +51,7 @@ router.post('/addcomment', async (req, res) => {
 })
 
 //remove a comment from a station
-router.delete('/deletecomment', async (req, res) => {
+router.delete('/comment', async (req, res) => {
     try {
         const { stationID, commentID } = req.body
         await EVStation.findOneAndUpdate({ evID: stationID }, { $pull: { comments: commentID } }, { new: true })

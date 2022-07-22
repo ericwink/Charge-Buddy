@@ -30,7 +30,7 @@ export default function CommentsList({ stationID, needUpdate, setNeedUpdate }) {
     //delete a posted comment -- not working correctly yet
     async function deleteComment(stationID, commentID) {
         try {
-            const data = await axios.delete('/station/deletecomment', {
+            const data = await axios.delete('/station/comment', {
                 data: {
                     stationID: stationID,
                     commentID: commentID

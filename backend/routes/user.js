@@ -13,7 +13,7 @@ router.get('/checkaccount', async (req, res) => {
     try {
         if (!req.session.user) return res.status(500).json({ 'message': 'Something is wrong...' })
         const foundUser = await UserAccount.findOne({ username: req.session.user }).populate('favorites')
-        const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name } })
+        const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name, id: fav._id } })
         console.log('sending info now...')
         res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
@@ -65,7 +65,6 @@ router.post('/login', async (req, res) => {
         // console.log(req.session)
         //send accessToken in json for front-end use
         console.log('sending info now...')
-        console.log(req.session)
         res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
         console.log(error)
@@ -87,7 +86,7 @@ router.get('/logout', async (req, res) => {
     }
 })
 
-router.post('/addfavorite', async (req, res) => {
+router.post('/favorites', async (req, res) => {
     try {
         if (!req.session.user) return res.status(400).json({ 'message': 'user must be signed in' })
         let station = await EVStation.findOne({ evID: req.body.evID })
@@ -104,6 +103,18 @@ router.post('/addfavorite', async (req, res) => {
         res.send('done!')
     } catch (err) {
         console.log(err)
+    }
+})
+
+router.delete('/favorites', async (req, res) => {
+    const { favID } = req.body
+    try {
+        if (!req.session.user) return res.status(500).json({ 'message': 'Something is wrong...' })
+        await UserAccount.findOneAndUpdate({ username: req.session.user }, { $pull: { favorites: favID } }, { new: true })
+        res.send('favorite removed')
+    } catch (error) {
+        console.log(error)
+        res.send(error)
     }
 })
 

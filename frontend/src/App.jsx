@@ -44,7 +44,9 @@ function App() {
   return (
     <div>
       <UserContext.Provider value={{ loggedInUser, setloggedInUser, favorites, setFavorites, clickFav, setClickFav }}>
-        <AccountHandle />
+        <AccountHandle
+          updateFuelStations={updateFuelStations}
+          panToUserLocation={panToUserLocation} />
         <EVSearch
           updateFuelStations={updateFuelStations}
           panToUserLocation={panToUserLocation}
