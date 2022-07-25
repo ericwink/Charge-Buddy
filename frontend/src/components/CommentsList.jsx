@@ -22,6 +22,7 @@ export default function CommentsList({ stationID, needUpdate, setNeedUpdate }) {
             const data = await axios.get(`/station/${stationID}`)
             let newcomments = data.data.comments
             setStoredComments(newcomments.reverse())
+            console.log(data)
         } catch (error) {
             console.log(error)
         }

@@ -8,7 +8,7 @@ import AccountHandle from './components/AccountHandle';
 import { UserContext } from './Context/UserContext';
 
 const mapContainerStyle = { width: '100vw', height: '100vh' }
-const center = { lat: 43.653225, lng: -79.383186 }
+const center = { lat: 39.76453, lng: -105.1353038 }
 const options = {
   styles: mapStyles,
   disableDefaultUI: true,
@@ -44,13 +44,16 @@ function App() {
   return (
     <div>
       <UserContext.Provider value={{ loggedInUser, setloggedInUser, favorites, setFavorites, clickFav, setClickFav }}>
-        <AccountHandle
-          updateFuelStations={updateFuelStations}
-          panToUserLocation={panToUserLocation} />
-        <EVSearch
-          updateFuelStations={updateFuelStations}
-          panToUserLocation={panToUserLocation}
-        />
+        <nav className='d-flex justify-content-between navbuddy'>
+          <EVSearch
+            updateFuelStations={updateFuelStations}
+            panToUserLocation={panToUserLocation}
+          />
+          <h1 className='bigtitle'><i class="fa-solid fa-car-side"></i> ChargeBuddy</h1>
+          <AccountHandle
+            updateFuelStations={updateFuelStations}
+            panToUserLocation={panToUserLocation} />
+        </nav>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           zoom={8}

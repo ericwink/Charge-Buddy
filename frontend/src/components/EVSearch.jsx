@@ -82,14 +82,18 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         });
     }
 
+    //validate available information and determine which search route to use with API
     async function handleSearch(e) {
         e.preventDefault()
-        if (street) {
+        //required field combos as determeind by API
+        if ((street && city && state && zipCode) || (street && city && state) || (street && zipCode) || (zipCode) || (city && state)) {
             addressFormat() //formats the address and then searches EV Stations by address
+            handleClose()
         } else if (userLatitude) {
             evByCurrentLocation()
+            handleClose()
         } else {
-            alert('empty search criteria')
+            alert('Please fill in addiitonal search criteria')
         }
 
     }
@@ -129,9 +133,9 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                     <Offcanvas.Title>EV Charging Station Search</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    Enter a location (not all fields required), and distance to populate a list of EV Charging Stations
+                    <p>Enter a location (not all fields required), and distance to populate a list of EV Charging Stations</p>
 
-                    <Form onSubmit={handleSearch}>
+                    <Form onSubmit={handleSearch} className='dropshadow'>
                         <FloatingLabel controlId="floatingStreet" label='Street Address' className='mb-3'>
                             <Form.Control
                                 type='text'
@@ -204,7 +208,7 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
 
                         {/* button selections */}
                         <div className="d-grid gap-2">
-                            <Button variant="outline-primary" size='lg' disabled={loadingLocation} onClick={handleClose} type='submit'>Search</Button>
+                            <Button variant="outline-primary" size='lg' disabled={loadingLocation} type='submit'>Search</Button>
                             <Button variant="outline-primary" size='lg' disabled={loadingLocation} onClick={clearSearch}>Clear</Button>
                             <Button variant="outline-primary" size='lg' disabled={loadingLocation} onClick={() => { navigator.geolocation.getCurrentPosition(success, error, options); setLoadingLocation(true) }}>
                                 {!loadingLocation ? 'Locate Me!' :

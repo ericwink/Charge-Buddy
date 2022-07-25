@@ -11,7 +11,7 @@ export default function MyAccount({ logout, updateFuelStations, panToUserLocatio
     return (
         <div>
             <h2>Welcome, {loggedInUser}!</h2>
-            <div className="d-grid gap-2">
+            <div className="d-grid gap-2 dropshadow">
                 <Button variant="primary" onClick={() => logout()}>LOGOUT</Button>
             </div><br />
             <h2>Favorites:</h2>

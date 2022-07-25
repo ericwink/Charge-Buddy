@@ -36,7 +36,7 @@ export default function FavoriteCard({ name, favID, evID, updateFuelStations, pa
     }
 
     return (
-        <Card className='mb-2'>
+        <Card className='mb-2 dropshadow'>
             <Card.Body>
                 <Card.Title>{name}</Card.Title>
                 <Button onClick={callStationByID} variant='outline'><i class="fa-solid fa-map-location-dot" /></Button>
