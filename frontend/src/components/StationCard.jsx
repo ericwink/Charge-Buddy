@@ -4,7 +4,6 @@ import { UserContext } from "../Context/UserContext";
 import QuickActions from "./QuickActions"
 import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup';
-import { isValidDateValue } from "@testing-library/user-event/dist/utils";
 
 export default function StationCard({ stationInfo }) {
 
@@ -19,7 +18,7 @@ export default function StationCard({ stationInfo }) {
 
     useEffect(() => {
         findFav()
-    }, [favorites])
+    }, [favorites, stationInfo])
 
     function findFav() {
         let found = favorites.find(obj => obj.evID === stationInfo.id)
@@ -64,8 +63,8 @@ export default function StationCard({ stationInfo }) {
                     <Card.Title>{stationInfo.station_name}</Card.Title>
                     <Card.Subtitle className='d-flex justify-content-between'><small className="text-muted mt-2">Access: {stationInfo.access_code}</small>
                         {!loggedInUser ? null : !isFav ?
-                            <a className='notfavorite' onClick={() => addToFavorites()}><i class='fa-regular fa-heart'></i></a> :
-                            <a className='favorite' onClick={() => removeFavorite()}><i class='fa-solid fa-heart'></i></a>
+                            <a className='notfavorite' onClick={addToFavorites}><i class='fa-regular fa-heart'></i></a> :
+                            <a className='favorite' onClick={removeFavorite}><i class='fa-solid fa-heart'></i></a>
                         }
                     </Card.Subtitle>
 

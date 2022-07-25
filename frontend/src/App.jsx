@@ -57,6 +57,7 @@ function App() {
           center={center}
           options={options}
           onLoad={onMapLoad}
+          onClick={() => setSelectedStation(null)}
         >
           {
             fuelStations.map((station, index) => {

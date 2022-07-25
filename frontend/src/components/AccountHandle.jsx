@@ -64,6 +64,7 @@ export default function AccountHandle({ updateFuelStations, panToUserLocation })
             setVariant('success')
             setMsg(response.data.message)
             setSuccessSignUp(true)
+            setDisplayState('Sign In')
         } catch (error) {
             setShowAlert(true)
             setVariant('danger')
@@ -116,7 +117,7 @@ export default function AccountHandle({ updateFuelStations, panToUserLocation })
 
             <Offcanvas placement='end' show={show} onHide={handleClose}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>{displayState}</Offcanvas.Title>
+                    <Offcanvas.Title>{loggedInUser ? 'My Account' : displayState}</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
 
@@ -131,7 +132,12 @@ export default function AccountHandle({ updateFuelStations, panToUserLocation })
                         <MyAccount
                             updateFuelStations={updateFuelStations}
                             panToUserLocation={panToUserLocation}
-                            logout={logout} /> :
+                            logout={logout}
+                            setMsg={setMsg}
+                            setVariant={setVariant}
+                            showAlert={showAlert}
+                            setShowAlert={setShowAlert}
+                        /> :
 
                         displayState === 'Create Account' && !successSignUp ?
                             <div>

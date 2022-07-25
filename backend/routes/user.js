@@ -77,7 +77,6 @@ router.get('/logout', async (req, res) => {
     try {
         req.session.user = null
         await req.session.save
-        console.log(req.session)
         req.session.regenerate
         return res.status(200).json({ 'message': 'User successfully logged out!' })
     } catch (error) {
@@ -98,9 +97,8 @@ router.post('/favorites', async (req, res) => {
         }
         const foundUser = await UserAccount.findOne({ username: req.body.loggedInUser })
         foundUser.favorites.push(station._id)
-        console.log(foundUser)
         await foundUser.save()
-        res.send('done!')
+        res.send('Favorite saved')
     } catch (err) {
         console.log(err)
     }
@@ -111,10 +109,10 @@ router.delete('/favorites', async (req, res) => {
     try {
         if (!req.session.user) return res.status(500).json({ 'message': 'Something is wrong...' })
         await UserAccount.findOneAndUpdate({ username: req.session.user }, { $pull: { favorites: favID } }, { new: true })
-        res.send('favorite removed')
+        return res.status(200).json({ 'message': 'EV Station removed from favorites!' })
     } catch (error) {
         console.log(error)
-        res.send(error)
+        return res.status(500).json({ 'message': 'Internal Server Error' })
     }
 })
 

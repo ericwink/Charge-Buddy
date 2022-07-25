@@ -4,7 +4,7 @@ import axios from 'axios'
 import { UserContext } from "../Context/UserContext";
 import { useContext } from 'react';
 
-export default function FavoriteCard({ name, favID, evID, updateFuelStations, panToUserLocation }) {
+export default function FavoriteCard({ name, favID, evID, updateFuelStations, panToUserLocation, setMsg, setVariant, setShowAlert }) {
 
     const { clickFav, setClickFav, } = useContext(UserContext)
 
@@ -15,9 +15,16 @@ export default function FavoriteCard({ name, favID, evID, updateFuelStations, pa
                     favID: favID,
                 }
             })
+            console.log(data)
             setClickFav(!clickFav)
+            setShowAlert(true)
+            setVariant('success')
+            setMsg(data.data.message)
         } catch (error) {
             console.log(error)
+            setShowAlert(true)
+            setVariant('danger')
+            setMsg(error.data.data.message)
         }
     }
 
