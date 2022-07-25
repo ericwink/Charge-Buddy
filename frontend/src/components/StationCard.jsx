@@ -31,6 +31,7 @@ export default function StationCard({ stationInfo }) {
     }
 
     const addToFavorites = async () => {
+        if (!loggedInUser) return alert('Sign in to save favorites!')
         try {
             const response = await axios.post('/user/favorites', {
                 evID: stationInfo.id,
@@ -62,7 +63,7 @@ export default function StationCard({ stationInfo }) {
                 <Card.Body>
                     <Card.Title>{stationInfo.station_name}</Card.Title>
                     <Card.Subtitle className='d-flex justify-content-between'><small className="text-muted mt-2">Access: {stationInfo.access_code}</small>
-                        {!loggedInUser ? null : !isFav ?
+                        {!isFav ?
                             <a className='notfavorite' onClick={addToFavorites}><i class='fa-regular fa-heart'></i></a> :
                             <a className='favorite' onClick={removeFavorite}><i class='fa-solid fa-heart'></i></a>
                         }

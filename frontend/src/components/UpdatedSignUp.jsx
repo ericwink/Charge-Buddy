@@ -27,7 +27,7 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
     }, [password, verifyPass, username])
 
     return (
-        <Form onSubmit={createAccount}>
+        <Form className='dropshadow' onSubmit={createAccount}>
             <FloatingLabel controlId="floatingUsername" label="Username" className='mb-3'>
                 <Form.Control
                     type='text'
@@ -73,7 +73,7 @@ export default function UpdatedSignUp({ username, setUsername, password, setPass
             <div className="d-grid gap-2">
                 <Button variant="primary" size='lg' type='submit' disabled={!allowSubmit}>Create Account</Button>
             </div>
-        </Form >
+        </Form>
 
     )
 }

@@ -62,7 +62,7 @@ export default function AddComment({ stationName, stationID, needUpdate, setNeed
     return (
         <div>
             <StationRating setRating={setRating} changeRadio={changeRadio} checked={checked} />
-            <InputGroup className="mb-1">
+            <InputGroup className="mb-1 dropshadow">
                 <Form.Control as='textarea' onChange={commentChange} value={comment}></Form.Control>
                 <Button variant='success' size='sm' onClick={addItem}>Submit</Button>
             </InputGroup>

@@ -19,7 +19,7 @@ export default function EVComment({ stationID, body, date, commentID, deleteComm
     }
 
     return (
-        <ListGroup.Item>
+        <ListGroup.Item className='dropshadow'>
             <div className="d-flex w-100 justify-content-between">
                 <small className="text-muted">{author}</small>
             </div>

@@ -7,7 +7,7 @@ export default function SignIn({ login, username, password, setUsername, setPass
 
     return (
         <div>
-            <form onSubmit={login}>
+            <form className='dropshadow' onSubmit={login}>
 
                 <FloatingLabel controlId="floatingUsername" label="Username" className='mb-3'>
                     <Form.Control

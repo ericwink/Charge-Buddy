@@ -38,7 +38,6 @@ function App() {
     mapRef.current.panTo({ lat: userLat, lng: userLng })
   }
 
-  //need to fix the placement of this at some point...
   if (loadError) return "Error loading map"
   if (!isLoaded) return "Loading..."
   return (
@@ -91,7 +90,3 @@ function App() {
 
 }
 export default App;
-
-//To Visit
-//https://afdc.energy.gov/fuels/electricity_locations.html#/find/nearest?fuel=ELEC
-//https://www.plugshare.com/location/369243
