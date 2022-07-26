@@ -14,7 +14,6 @@ router.get('/checkaccount', async (req, res) => {
         if (!req.session.user) return res.status(500).json({ 'message': 'Something is wrong...' })
         const foundUser = await UserAccount.findOne({ username: req.session.user }).populate('favorites')
         const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name, id: fav._id } })
-        console.log('sending info now...')
         res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
         console.log(error)
@@ -64,7 +63,6 @@ router.post('/login', async (req, res) => {
         })*/
         // console.log(req.session)
         //send accessToken in json for front-end use
-        console.log('sending info now...')
         res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
         console.log(error)

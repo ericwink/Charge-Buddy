@@ -3,7 +3,7 @@ import { useContext } from "react"
 import FavoriteCard from "./FavoriteCard"
 import Button from 'react-bootstrap/Button'
 
-export default function MyAccount({ logout, updateFuelStations, panToUserLocation, setMsg, setVariant, setShowAlert }) {
+export default function MyAccount({ logout, updateFuelStations, panToUserLocation, setMsg, setVariant, setShowAlert, handleClose }) {
 
 
     const { loggedInUser, favorites } = useContext(UserContext)
@@ -27,6 +27,7 @@ export default function MyAccount({ logout, updateFuelStations, panToUserLocatio
                         setMsg={setMsg}
                         setVariant={setVariant}
                         setShowAlert={setShowAlert}
+                        handleClose={handleClose}
                     />
                 )
             })}

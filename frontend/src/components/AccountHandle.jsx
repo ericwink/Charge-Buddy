@@ -137,6 +137,7 @@ export default function AccountHandle({ updateFuelStations, panToUserLocation })
                             setVariant={setVariant}
                             showAlert={showAlert}
                             setShowAlert={setShowAlert}
+                            handleClose={handleClose}
                         /> :
 
                         displayState === 'Create Account' && !successSignUp ?

@@ -15,7 +15,7 @@ mongoose.connect(dbLink)
     .catch(err => console.log(err))
 
 //join dir
-app.use(express.static(path.join(__dirname + '/public')))
+app.use(express.static('public'))
 
 //form parsing middleware
 app.use(express.json());
@@ -42,6 +42,7 @@ app.use(session({
 //routes
 app.use('/user', require('./routes/user'))
 app.use('/station', require('./routes/station'))
+app.use('/evapi', require('./routes/evapi'))
 
 
 app.listen(port, () => {

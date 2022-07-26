@@ -4,7 +4,7 @@ import axios from 'axios'
 import { UserContext } from "../Context/UserContext";
 import { useContext } from 'react';
 
-export default function FavoriteCard({ name, favID, evID, updateFuelStations, panToUserLocation, setMsg, setVariant, setShowAlert }) {
+export default function FavoriteCard({ name, favID, evID, updateFuelStations, panToUserLocation, setMsg, setVariant, setShowAlert, handleClose }) {
 
     const { clickFav, setClickFav, } = useContext(UserContext)
 
@@ -15,7 +15,6 @@ export default function FavoriteCard({ name, favID, evID, updateFuelStations, pa
                     favID: favID,
                 }
             })
-            console.log(data)
             setClickFav(!clickFav)
             setShowAlert(true)
             setVariant('success')
@@ -29,10 +28,14 @@ export default function FavoriteCard({ name, favID, evID, updateFuelStations, pa
     }
 
     const callStationByID = async () => {
-        const fullLink = `https://developer.nrel.gov/api/alt-fuel-stations/v1/${evID}.json?api_key=${process.env.REACT_APP_EV_API_KEY}`
-        const data = await axios.get(fullLink)
-        updateFuelStations([data.data.alt_fuel_station])
-        panToUserLocation(data.data.alt_fuel_station.latitude, data.data.alt_fuel_station.longitude)
+        try {
+            const data = await axios.post('/evapi/stationid', { evID: evID })
+            updateFuelStations([data.data.alt_fuel_station])
+            panToUserLocation(data.data.alt_fuel_station.latitude, data.data.alt_fuel_station.longitude)
+            handleClose()
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (

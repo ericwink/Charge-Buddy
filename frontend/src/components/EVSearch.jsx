@@ -47,14 +47,13 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         userSpot()
     }
 
-    //https://developer.nrel.gov/docs/transportation/alt-fuel-stations-v1/all/
-
     //API call to retrieve EV Charging Station loction data based on address search
     async function evDataCall(address) {
         try {
-            const fullLink = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=${process.env.REACT_APP_EV_API_KEY}&location=${address}&radius=${miles}&fuel_type=ELEC&limit=200`
-            const results = await axios.get(fullLink)
-            console.log(results)
+            const results = await axios.post('/evapi/address', {
+                address: address,
+                miles: miles,
+            })
             updateFuelStations(results.data.fuel_stations)
         } catch (error) {
             console.log(error)
@@ -64,8 +63,11 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
     //API call to retrieve EV Charging Station loction data based on user current geoData
     async function evByCurrentLocation() {
         try {
-            const fullLink = `https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.json?api_key=${process.env.REACT_APP_EV_API_KEY}&latitude=${userLatitude}&longitude=${userLongitude}&radius=${miles}&fuel_type=ELEC&limit=200`
-            const results = await axios.get(fullLink)
+            const results = await axios.post('/evapi/latlng', {
+                userLatitude: userLatitude,
+                userLongitude: userLongitude,
+                miles: miles
+            })
             updateFuelStations(results.data.fuel_stations)
             panToUserLocation(userLatitude, userLongitude)
         } catch (error) {
@@ -121,7 +123,8 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
 
     //error function for getting user locaiton.
     function error(err) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
+        alert(`ERROR(${err.code}): ${err.message}`);
+        setLoadingLocation(false)
     }
 
     return (
