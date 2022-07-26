@@ -35,6 +35,7 @@ app.use(session({
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: dbLink, collectionName: 'sessions' }),
     cookie: {
+        secure: true,
         maxAge: 1000 * 60 * 60 * 24 //1 day expiration
     }
 }))
