@@ -12,10 +12,6 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 export default function EVSearch({ updateFuelStations, panToUserLocation }) {
-    const [zipCode, setZipCode] = useState('')
-    const [street, setStreet] = useState('')
-    const [city, setCity] = useState('')
-    const [state, setState] = useState('')
     const [miles, setMiles] = useState('10')
     const [userLatitude, setUserLatitude] = useState('')
     const [userLongitude, setUserLongitude] = useState('')
@@ -25,15 +21,26 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [values, setValues] = useState({
+        zipCode: '',
+        street: '',
+        city: '',
+        state: '',
+    })
 
+    function handleFormChange(e) {
+        setValues({ ...values, [e.target.name]: e.target.value })
+    }
 
     //clear all data in search boxes
     function clearSearch() {
-        setZipCode('')
-        setCity('')
-        setState('')
-        setStreet('')
         setMiles('10')
+        setValues({
+            zipCode: '',
+            street: '',
+            city: '',
+            state: '',
+        })
         setUserLatitude('')
         setUserLongitude('')
         setVisible(false)
@@ -41,7 +48,7 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
     }
 
     function addressFormat() {
-        const phaseOne = [street, city, state, zipCode].filter(Boolean).join("+");
+        const phaseOne = [values.street, values.city, values.state, values.zipCode].filter(Boolean).join("+");
         const phaseTwo = phaseOne.replace(/\s/g, '+')
         evDataCall(phaseTwo)
         userSpot()
@@ -77,7 +84,7 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
 
     //finds lat lng by address searched and pans to that location
     async function userSpot() {
-        const address = `${street} ${city} ${state} ${zipCode}`
+        const address = `${values.street} ${values.city} ${values.state} ${values.zipCode}`
         await getGeocode({ address: address }).then((results) => {
             const { lat, lng } = getLatLng(results[0]);
             panToUserLocation(lat, lng)
@@ -88,7 +95,7 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
     async function handleSearch(e) {
         e.preventDefault()
         //required field combos as determeind by API
-        if ((street && city && state && zipCode) || (street && city && state) || (street && zipCode) || (zipCode) || (city && state)) {
+        if ((values.street && values.city && values.state && values.zipCode) || (values.street && values.city && values.state) || (values.street && values.zipCode) || (values.zipCode) || (values.city && values.state)) {
             addressFormat() //formats the address and then searches EV Stations by address
             handleClose()
         } else if (userLatitude) {
@@ -112,10 +119,12 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
         const crd = pos.coords;
         setUserLatitude(crd.latitude)
         setUserLongitude(crd.longitude)
-        setZipCode('')
-        setCity('')
-        setState('')
-        setStreet('')
+        setValues({
+            zipCode: '',
+            street: '',
+            city: '',
+            state: '',
+        })
         setVisible(true)
         setAddyLock(true)
         setLoadingLocation(false)
@@ -143,8 +152,10 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                             <Form.Control
                                 type='text'
                                 placeholder='Street Address'
-                                value={street}
-                                onChange={(e) => { setStreet(e.target.value) }}
+                                value={values.street}
+                                name='street'
+                                // onChange={(e) => { setStreet(e.target.value) }}
+                                onChange={(e) => handleFormChange(e)}
                                 disabled={addyLock}
                             />
                         </FloatingLabel>
@@ -153,8 +164,10 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                             <Form.Control
                                 type='text'
                                 placeholder='City'
-                                value={city}
-                                onChange={(e) => { setCity(e.target.value) }}
+                                name='city'
+                                value={values.city}
+                                // onChange={(e) => { setCity(e.target.value) }}
+                                onChange={(e) => handleFormChange(e)}
                                 disabled={addyLock}
                             />
                         </FloatingLabel>
@@ -164,8 +177,10 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                             <Form.Control
                                 type='text'
                                 placeholder='State'
-                                value={state}
-                                onChange={(e) => { setState(e.target.value) }}
+                                name='state'
+                                value={values.state}
+                                // onChange={(e) => { setState(e.target.value) }}
+                                onChange={(e) => handleFormChange(e)}
                                 disabled={addyLock}
                             />
                         </FloatingLabel>
@@ -174,8 +189,10 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                             <Form.Control
                                 type='text'
                                 placeholder='Zip Code'
-                                value={zipCode}
-                                onChange={(e) => { setZipCode(e.target.value) }}
+                                name='zipCode'
+                                value={values.zipCode}
+                                // onChange={(e) => { setZipCode(e.target.value) }}
+                                onChange={(e) => handleFormChange(e)}
                                 disabled={addyLock}
                             />
                         </FloatingLabel>
@@ -187,7 +204,8 @@ export default function EVSearch({ updateFuelStations, panToUserLocation }) {
                                     type='text'
                                     placeholder='Latitude'
                                     value={userLatitude}
-                                    onChange={(e) => { setUserLatitude(e.target.value) }}
+                                    // onChange={(e) => { setUserLatitude(e.target.value) }}
+                                    onChange={(e) => handleFormChange(e)}
                                     disabled={addyLock}
                                 />
                             </FloatingLabel>
