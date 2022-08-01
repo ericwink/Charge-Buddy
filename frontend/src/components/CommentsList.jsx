@@ -10,7 +10,7 @@ export default function CommentsList({ stationID, needUpdate, setNeedUpdate }) {
     //call getComments immediately on mount
     useEffect(() => {
         getComments()
-    }, [])
+    })
 
     useEffect(() => {
         getComments()
@@ -28,13 +28,30 @@ export default function CommentsList({ stationID, needUpdate, setNeedUpdate }) {
         }
     }
 
-    //delete a posted comment -- not working correctly yet
+    //delete a posted comment
     async function deleteComment(stationID, commentID) {
         try {
             const data = await axios.delete('/station/comment', {
                 data: {
                     stationID: stationID,
                     commentID: commentID
+                }
+            })
+            setNeedUpdate(!needUpdate)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    //edit a posted comment
+    async function editComment(stationID, commentID, comment, rating) {
+        try {
+            const data = await axios.patch('/station/comment', {
+                data: {
+                    stationID: stationID,
+                    commentID: commentID,
+                    comment: comment,
+                    rating: rating
                 }
             })
             setNeedUpdate(!needUpdate)
@@ -55,6 +72,7 @@ export default function CommentsList({ stationID, needUpdate, setNeedUpdate }) {
                         commentID={comment._id}
                         rating={comment.rating}
                         deleteComment={deleteComment}
+                        editComment={editComment}
                         author={comment.author.username}
                     />
                 )

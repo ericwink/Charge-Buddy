@@ -5,8 +5,9 @@
     padding-bottom: 5px;
 }
 
-.delete-comment {
+.adjustComment {
     position: absolute;
+    justify-content: right;
     bottom: 0;
     right: 0;
 }

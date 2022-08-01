@@ -2,8 +2,9 @@ import { useContext } from "react"
 import { UserContext } from "../Context/UserContext"
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button'
+import EditComment from "./EditComment";
 
-export default function EVComment({ stationID, body, date, commentID, deleteComment, rating, author }) {
+export default function EVComment({ stationID, body, date, commentID, deleteComment, editComment, rating, author }) {
 
     const { loggedInUser } = useContext(UserContext)
 
@@ -27,7 +28,16 @@ export default function EVComment({ stationID, body, date, commentID, deleteComm
             <p className="mb-1">{body}</p>
             <small className="text-muted">{date}</small>
             {loggedInUser === author ?
-                <Button size='sm' variant='outline' className='delete-comment' onClick={() => { deleteComment(stationID, commentID) }}><i class="fa-solid fa-trash"></i></Button>
+                <section className="adjustComment">
+                    <EditComment
+                        comment={body}
+                        rating={rating}
+                        stationID={stationID}
+                        commentID={commentID}
+                        editComment={editComment}
+                    />
+                    <Button size='sm' variant='outline' onClick={() => { deleteComment(stationID, commentID) }}><i class="fa-solid fa-trash"></i></Button>
+                </section>
                 : null}
         </ListGroup.Item>
     )

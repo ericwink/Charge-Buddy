@@ -62,4 +62,16 @@ router.delete('/comment', async (req, res) => {
     }
 })
 
+router.patch('/comment', async (req, res) => {
+    try {
+        const { stationID, commentID, comment, rating } = req.body.data
+        const result = await Comment.findById(commentID)
+        result.body = comment
+        result.rating = rating
+        result.save()
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 module.exports = router
