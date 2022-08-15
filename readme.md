@@ -60,4 +60,4 @@ https://developer.nrel.gov/docs/transportation/alt-fuel-stations-v1/
 
 ![Search](./images/search.png)
 ![Results](./images/results.png)
-![Account Creation](./images/accont%20creation.png)
+![Account Creation](./images/create%20account.png)
