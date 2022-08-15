@@ -44,6 +44,9 @@ app.use(session({
 app.use('/user', require('./routes/user'))
 app.use('/station', require('./routes/station'))
 app.use('/evapi', require('./routes/evapi'))
+app.get('/', (req, res) => {
+    res.send('Charge-Buddy API')
+})
 
 
 app.listen(port, () => {
