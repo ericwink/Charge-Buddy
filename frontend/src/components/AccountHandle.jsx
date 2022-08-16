@@ -10,8 +10,6 @@ import DisplayAlert from "./DisplayAlert"
 
 export default function AccountHandle({ updateFuelStations, panToUserLocation }) {
 
-    // axios.defaults.withCredentials = true
-
     const [displayState, setDisplayState] = useState('Sign In')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')

@@ -28,14 +28,17 @@ app.use(cors({
     credentials: true
 }))
 
+app.enable('trust proxy'); // optional, not needed for secure cookies
 //session middleware
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: dbLink, collectionName: 'sessions' }),
+    proxy: true,
     cookie: {
-        secure: true,
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // must be 'none' to enable cross-site delivery
+        secure: process.env.NODE_ENV === "production", // must be true if sameSite='none'
         maxAge: 1000 * 60 * 60 * 24 //1 day expiration
     }
 }))

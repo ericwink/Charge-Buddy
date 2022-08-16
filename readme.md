@@ -6,7 +6,7 @@ Charge-Buddy is an application designed to allow users to locate Electric Vehicl
 
 ## Live Demo:
 
-A live version of this project is avaialbe at: http://charge-buddy.herokuapp.com/
+A live version of this project is avaialbe at: https://chargebuddy.netlify.app/
 
 ## Features:
 
