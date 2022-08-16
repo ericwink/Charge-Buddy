@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from '../config/axios'
 import { useState, useEffect } from "react"
 import EVComment from "./EVComment"
 import ListGroup from 'react-bootstrap/ListGroup';

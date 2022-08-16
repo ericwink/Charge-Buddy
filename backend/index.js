@@ -7,7 +7,6 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const mongoose = require('mongoose');
 const dbLink = `mongodb+srv://${process.env.MONGO_LOGIN}:${process.env.MONGO_SECRET}@cluster0.1sbqg.mongodb.net/?retryWrites=true&w=majority`
-const path = require('path')
 
 //connect to mongoose
 mongoose.connect(dbLink)
@@ -35,7 +34,7 @@ app.use(session({
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: dbLink, collectionName: 'sessions' }),
     cookie: {
-        secure: true,
+        // secure: true,
         maxAge: 1000 * 60 * 60 * 24 //1 day expiration
     }
 }))

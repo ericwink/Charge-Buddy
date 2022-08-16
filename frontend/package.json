@@ -2,7 +2,7 @@
   "name": "chargespace",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://charge-buddy-api.herokuapp.com/",
+  "proxy": "http://localhost:8080/",
   "dependencies": {
     "@react-google-maps/api": "^2.12.0",
     "axios": "^0.27.2",

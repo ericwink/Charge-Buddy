@@ -1,6 +1,6 @@
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
-import axios from 'axios'
+import axios from '../config/axios'
 import { UserContext } from "../Context/UserContext";
 import { useContext } from 'react';
 

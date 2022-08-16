@@ -3,7 +3,7 @@ import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
 } from "use-places-autocomplete";
-import axios from "axios";
+import axios from '../config/axios'
 //react-bootstrap
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';

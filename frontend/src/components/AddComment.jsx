@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from '../config/axios'
 import { useContext, useState } from "react";
 import { UserContext } from "../Context/UserContext";
 import StationRating from "./StationRating";

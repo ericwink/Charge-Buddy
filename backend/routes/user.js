@@ -11,7 +11,7 @@ const UserAccount = require('../models/UserAccount')
 //find and send user info by session on server
 router.get('/checkaccount', async (req, res) => {
     try {
-        if (!req.session.user) return res.status(500).json({ 'message': 'Something is wrong...' })
+        if (!req.session.user) return res.status(500).json({ 'message': 'No user session active' })
         const foundUser = await UserAccount.findOne({ username: req.session.user }).populate('favorites')
         const favorites = foundUser.favorites.map(fav => { return { evID: fav.evID, name: fav.name, id: fav._id } })
         res.json({ user: foundUser.username, favorites: favorites })
@@ -61,8 +61,7 @@ router.post('/login', async (req, res) => {
         await req.session.save/*(function (err) {
             if (err) console.log(err)
         })*/
-        // console.log(req.session)
-        //send accessToken in json for front-end use
+        //send json for front-end use
         res.json({ user: foundUser.username, favorites: favorites })
     } catch (error) {
         console.log(error)
@@ -72,10 +71,11 @@ router.post('/login', async (req, res) => {
 
 //log-out route
 router.get('/logout', async (req, res) => {
+    if (!req.session) return res.status(500).json({ 'message': 'No user session exists!' })
     try {
         req.session.user = null
         await req.session.save
-        req.session.regenerate
+        await req.session.destroy()
         return res.status(200).json({ 'message': 'User successfully logged out!' })
     } catch (error) {
         console.log(error)
@@ -84,16 +84,17 @@ router.get('/logout', async (req, res) => {
 })
 
 router.post('/favorites', async (req, res) => {
+    const { evID, stationName } = req.body
     try {
         if (!req.session.user) return res.status(400).json({ 'message': 'user must be signed in' })
-        let station = await EVStation.findOne({ evID: req.body.evID })
+        let station = await EVStation.findOne({ evID: evID })
         if (!station) {
             station = new EVStation
-            station.evID = req.body.evID
-            station.name = req.body.stationName
+            station.evID = evID
+            station.name = stationName
             await station.save()
         }
-        const foundUser = await UserAccount.findOne({ username: req.body.loggedInUser })
+        const foundUser = await UserAccount.findOne({ username: req.session.user })
         foundUser.favorites.push(station._id)
         await foundUser.save()
         res.send('Favorite saved')

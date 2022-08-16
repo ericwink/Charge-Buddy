@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from '../config/axios'
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../Context/UserContext";
 import QuickActions from "./QuickActions"
@@ -36,7 +36,6 @@ export default function StationCard({ stationInfo }) {
             const response = await axios.post('/user/favorites', {
                 evID: stationInfo.id,
                 stationName: stationInfo.station_name,
-                loggedInUser: loggedInUser
             })
             setClickFav(!clickFav)
         } catch (error) {
@@ -45,6 +44,7 @@ export default function StationCard({ stationInfo }) {
     }
 
     const removeFavorite = async () => {
+        if (!loggedInUser) return alert('Sign in to remove favorites!')
         try {
             const data = await axios.delete('/user/favorites', {
                 data: {
