@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 //cors middleware
 app.use(cors({
     // origin: ['http://localhost:3000'],
-    origin: ['https://chargebuddy.netlify.app/'],
+    origin: 'https://chargebuddy.netlify.app/',
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }))
