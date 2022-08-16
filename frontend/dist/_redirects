@@ -1,0 +1,14 @@
+# Redirects from what the browser requests to what we serve
+
+/user/checkaccount
+/user/signup
+/user/login
+/user/logout
+/user/favorites
+
+/station/:id
+/station/comment
+
+/evapi/address
+/evapi/latlng
+/evapi/stationid
