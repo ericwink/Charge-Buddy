@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 //cors middleware
 app.use(cors({
     // origin: ['http://localhost:3000'],
-    origin: 'https://chargebuddy.netlify.app/',
+    origin: 'https://chargebuddy.netlify.app',
     methods: ['GET', 'POST', 'DELETE'],
     credentials: true
 }))
@@ -35,7 +35,7 @@ app.use(session({
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: dbLink, collectionName: 'sessions' }),
     cookie: {
-        // secure: true,
+        secure: true,
         maxAge: 1000 * 60 * 60 * 24 //1 day expiration
     }
 }))

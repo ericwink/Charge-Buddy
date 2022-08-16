@@ -7,7 +7,6 @@ export default function MyAccount({ logout, updateFuelStations, panToUserLocatio
 
 
     const { loggedInUser, favorites } = useContext(UserContext)
-    console.log('favorites', favorites)
 
     return (
         <div>
